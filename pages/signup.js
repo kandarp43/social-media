@@ -31,8 +31,12 @@ function Signup() {
 		const { name, value, files } = e.target
 
 		if (name === 'media') {
-			setMedia(files[0])
-			setMediaPreview(URL.createObjectURL(files[0]))
+			try {
+				setMedia(files[0])
+				setMediaPreview(URL.createObjectURL(files[0]))
+			} catch (err) {
+				console.log(err)
+			}
 		}
 
 		setUser((prev) => ({ ...prev, [name]: value }))
