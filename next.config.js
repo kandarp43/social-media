@@ -1,3 +1,5 @@
 module.exports = {
-  reactStrictMode: true,
+	env: {
+		CLOUDINARY_URL: 'process.env.CLOUDINARY_URL',
+	},
 }
