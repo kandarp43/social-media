@@ -1,5 +1,5 @@
 module.exports = {
 	env: {
-		CLOUDINARY_URL: 'process.env.CLOUDINARY_URL',
+		CLOUDINARY_URL: 'https://api.cloudinary.com/v1_1/connect-app/image/upload/',
 	},
 }
