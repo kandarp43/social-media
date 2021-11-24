@@ -62,7 +62,44 @@ router.get('/', authMiddleware, async (req, res) => {
 				.populate('comments.user')
 		}
 
-		return res.json(posts)
+		if (posts.length === 0) {
+			return res.json([])
+		}
+
+		let postsToBeSent = []
+		const { userId } = req
+
+		const loggedUser = await FollowerModel.findOne({ user: userId })
+
+		if (loggedUser.following.length === 0) {
+			postsToBeSent = posts.filter(
+				(post) => post.user._id.toString() === userId
+			)
+		}
+		//
+		else {
+			for (let i = 0; i < loggedUser.following.length; i++) {
+				const foundPostsFromFollowing = posts.filter(
+					(post) =>
+						post.user._id.toString() === loggedUser.following[i].user.toString()
+				)
+
+				if (foundPostsFromFollowing.length > 0)
+					postsToBeSent.push(...foundPostsFromFollowing)
+			}
+
+			const foundOwnPosts = posts.filter(
+				(post) => post.user._id.toString() === userId
+			)
+			if (foundOwnPosts.length > 0) postsToBeSent.push(...foundOwnPosts)
+		}
+
+		postsToBeSent.length > 0 &&
+			postsToBeSent.sort((a, b) => [
+				new Date(b.createdAt) - new Date(a.createdAt),
+			])
+
+		return res.json(postsToBeSent)
 	} catch (error) {
 		console.error(error)
 		return res.status(500).send(`Server error`)

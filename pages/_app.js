@@ -32,7 +32,7 @@ class MyApp extends App {
 				const { user, userFollowStats } = res.data
 
 				if (user) !protectedRoutes && redirectUser(ctx, '/')
-
+				
 				pageProps.user = user
 				pageProps.userFollowStats = userFollowStats
 			} catch (error) {
