@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { List, Image, Search } from "semantic-ui-react";
 import axios from "axios";
 import cookie from "js-cookie";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import baseUrl from "../../utils/baseUrl";
 let cancel;
 
-function SearchComponent() {
+function ChatListSearch({ chats, setChats }) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
+  const router = useRouter();
 
   const handleChange = async e => {
     const { value } = e.target;
     setText(value);
-
     if (value.length === 0) return;
     if (value.trim().length === 0) return;
 
-    setText(value);
     setLoading(true);
 
     try {
@@ -38,12 +37,37 @@ function SearchComponent() {
 
         return setLoading(false);
       }
+
       setResults(res.data);
     } catch (error) {
       console.log(error);
     }
 
     setLoading(false);
+  };
+
+  const addChat = result => {
+    const alreadyInChat =
+      chats.length > 0 &&
+      chats.filter(chat => chat.messagesWith === result._id).length > 0;
+
+    if (alreadyInChat) {
+      return router.push(`/messages?message=${result._id}`);
+    }
+    //
+    else {
+      const newChat = {
+        messagesWith: result._id,
+        name: result.name,
+        profilePicUrl: result.profilePicUrl,
+        lastMessage: "",
+        date: Date.now()
+      };
+
+      setChats(prev => [newChat, ...prev]);
+
+      return router.push(`/messages?message=${result._id}`);
+    }
   };
 
   useEffect(() => {
@@ -63,7 +87,7 @@ function SearchComponent() {
       results={results}
       onSearchChange={handleChange}
       minCharacters={1}
-      onResultSelect={(e, data) => Router.push(`/${data.result.username}`)}
+      onResultSelect={(e, data) => addChat(data.result)}
     />
   );
 }
@@ -79,4 +103,4 @@ const ResultRenderer = ({ _id, profilePicUrl, name }) => {
   );
 };
 
-export default SearchComponent;
+export default ChatListSearch;

@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { List, Popup, Image } from "semantic-ui-react";
-import axios from "axios";
-import baseUrl from "../../utils/baseUrl";
 import catchErrors from "../../utils/catchErrors";
-import cookie from "js-cookie";
 import Router from "next/router";
 import { LikesPlaceHolder } from "../Layout/PlaceHolderGroup";
+import { Axios } from "../../utils/postActions";
 
 function LikesList({ postId, trigger }) {
   const [likesList, setLikesList] = useState([]);
@@ -14,9 +12,7 @@ function LikesList({ postId, trigger }) {
   const getLikesList = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${baseUrl}/api/posts/like/${postId}`, {
-        headers: { Authorization: cookie.get("token") }
-      });
+      const res = await Axios.get(`/like/${postId}`);
       setLikesList(res.data);
     } catch (error) {
       alert(catchErrors(error));
@@ -31,7 +27,8 @@ function LikesList({ postId, trigger }) {
       onOpen={getLikesList}
       popperDependencies={[likesList]}
       trigger={trigger}
-      wide>
+      wide
+    >
       {loading ? (
         <LikesPlaceHolder />
       ) : (
@@ -43,7 +40,8 @@ function LikesList({ postId, trigger }) {
                 maxHeight: "15rem",
                 height: "15rem",
                 minWidth: "210px"
-              }}>
+              }}
+            >
               <List selection size="large">
                 {likesList.map(like => (
                   <List.Item key={like._id}>

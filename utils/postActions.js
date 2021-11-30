@@ -3,7 +3,7 @@ import baseUrl from "./baseUrl";
 import catchErrors from "./catchErrors";
 import cookie from "js-cookie";
 
-const Axios = axios.create({
+export const Axios = axios.create({
   baseURL: `${baseUrl}/api/posts`,
   headers: { Authorization: cookie.get("token") }
 });
