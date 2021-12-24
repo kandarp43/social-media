@@ -62,7 +62,7 @@ function ProfilePage({
 			setLoading(false)
 		}
 		getPosts()
-	}, [router.query.username])
+	}, [router.query])
 
 	useEffect(() => {
 		showToastr && setTimeout(() => setShowToastr(false), 4000)

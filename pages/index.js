@@ -154,9 +154,9 @@ export const getServerSideProps = async (ctx) => {
 			params: { pageNumber: 1 },
 		})
 
-		return { postsData: res.data }
+		return { props: { postsData: res.data } }
 	} catch (error) {
-		return { errorLoading: true }
+		return { props: { errorLoading: true } }
 	}
 }
 
